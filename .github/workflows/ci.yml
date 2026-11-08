@@ -1,0 +1,33 @@
+name: Mini-C Compiler CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y flex bison openjdk-17-jre
+
+    - name: Download MARS Jar
+      run: |
+        wget https://missouristate.edu -O Mars4_5.jar
+
+    - name: Run Makefile Tests
+      run: make test
+
+    - name: Make Validation Script Executable
+      run: chmod +x validate.sh
+
+    - name: Execute Headless MARS Validation
+      run: ./validate.sh
